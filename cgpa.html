@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGPA Calculator</title>
+<style>
+body {
+   font-family: Arial, sans-serif;
+  
+  background:  url("https://gpa-calculator.us.com/imgs/College-GPA-Calculator.jpg");
+  background-position: fixed;
+  background-size: cover;
+
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8)
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: white;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.button-container {
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.result-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.result {
+  font-size: 24px;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>CGPA Calculator</h2>
+
+  <form id="cgpaForm">
+<label for="prevsem">Previous Semester CGPA:</label>
+    <input type="number" id="prevsem" min="1" step="1" value="1">
+
+    <label for="numCourses">Number of Courses in the Semester:</label>
+    <input type="number" id="numCourses" min="1" step="1" value="1">
+    
+    <div id="courseInputs">
+      <!-- Course inputs will be added dynamically based on the number of courses -->
+    </div>
+  </form>
+
+  <div class="button-container">
+    <button onclick="calculateCGPA()">Calculate CGPA</button>
+  </div>
+
+  <div id="result" class="result-container"></div>
+</div>
+
+<script>
+// Define grade points for initial grades
+var gradePoints = {
+  O: 10,
+  A: 8,
+  B: 6,
+  C: 5
+};
+
+function addCourseInputs() {
+  var numCourses = parseInt(document.getElementById("numCourses").value);
+  var courseInputs = document.getElementById("courseInputs");
+  courseInputs.innerHTML = ""; // Clear existing inputs
+  
+  for (var i = 1; i <= numCourses; i++) {
+    var courseDiv = document.createElement("div");
+    
+    var creditLabel = document.createElement("label");
+    creditLabel.textContent = "Credit for course " + i + ":";
+    courseDiv.appendChild(creditLabel);
+    
+    var creditInput = document.createElement("input");
+    creditInput.type = "number";
+    creditInput.name = "credit" + i;
+    creditInput.min = "1";
+    creditInput.step = "1";
+    creditInput.required = true;
+    courseDiv.appendChild(creditInput);
+    
+    var gradeLabel = document.createElement("label");
+    gradeLabel.textContent = "Grade for course " + i + ":";
+    courseDiv.appendChild(gradeLabel);
+    
+    var gradeSelect = document.createElement("select");
+    gradeSelect.name = "grade" + i;
+    gradeSelect.required = true;
+    
+    // Add options for grades
+    for (var grade in gradePoints) {
+      var option = document.createElement("option");
+      option.value = grade;
+      option.textContent = grade;
+      gradeSelect.appendChild(option);
+    }
+    
+    courseDiv.appendChild(gradeSelect);
+    
+    courseInputs.appendChild(courseDiv);
+  }
+}
+
+document.getElementById("numCourses").addEventListener("change", addCourseInputs);
+
+function calculateCGPA() {
+  var form = document.getElementById("cgpaForm");
+  var numCourses = parseInt(form.numCourses.value);
+  var totalCredits = 0;
+  var totalGradePoints = 0;
+
+  for (var i = 1; i <= numCourses; i++) {
+    var credit = parseFloat(form["credit" + i].value);
+    var grade = form["grade" + i].value;
+    totalCredits += credit;
+    totalGradePoints += credit * gradePoints[grade];
+  }
+
+var cgpa = totalGradePoints / totalCredits;
+  var presem=parseInt(document.getElementById("prevsem").value);
+  var mark=(cgpa+presem)/2;
+  document.getElementById("result").innerHTML = "Your CGPA is: <span class='result'>" + mark.toFixed(2) + "</span>";
+  }
+</script>
+
+</body>
+</html>
